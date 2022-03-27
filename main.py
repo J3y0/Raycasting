@@ -10,11 +10,13 @@ window = pg.display.set_mode((SIZE_WINDOW, SIZE_WINDOW))
 pg.display.set_caption("2D Raycasting")
 window.fill((0,0,0))
 
+pg.mouse.set_visible(False)
+
 # clock
 clock = pg.time.Clock()
 
 # My objects
-light = source.create_source(20, 100,300)
+light = source.create_source(1, 100,300)
 wall1 = wall.Wall(300,400,300,500)
 
 while True:
@@ -23,6 +25,11 @@ while True:
     for event in pg.event.get():
         if event.type == pg.MOUSEMOTION:
             light.update_pos(pg.mouse.get_pos())
+
+    for rays in light.list_rays:
+        pt = rays.intersect(wall1)
+        rays.update_dir(pt)
+
     light.draw(window)
 
     source.refresh(window, clock, wall1, light)

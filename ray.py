@@ -9,6 +9,7 @@ class Ray(object):
         self.width = width
         self.color = color
         self.pos = (x,y)
+        self.norm = norm
         self.angle = angle
         self.dir = (norm*cos(angle), norm*sin(angle)) # The vector dir is normalized
 
@@ -36,7 +37,7 @@ class Ray(object):
         denom = (x2 - x1)*(y4 - y3) - (x4 - x3)*(y2 - y1)
 
         if denom == 0:
-            return 0
+            return (x1 + self.norm*cos(self.angle), y1 + self.norm*sin(self.angle)) 
 
         t = ((x3 - x1)*(y4 - y3) - (x4 - x3)*(y3 - y1))/ denom # Coef that follows the ray half-segment
         u = ((x3 - x1)*(y2 - y1) - (y3 - y1)*(x2 - x1))/ denom # Coef that follows the wall segment
@@ -45,7 +46,7 @@ class Ray(object):
             pt = (x3 + u*(x4 - x3), y3 + u*(y4 - y3))
             return pt
         else:
-            return 0
+            return (x1 + self.norm*cos(self.angle), y1 + self.norm*sin(self.angle))
 
 
     def update_dir(self, coord):

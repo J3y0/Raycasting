@@ -1,6 +1,7 @@
 import ray
 import wall
 import pygame as pg 
+import source
 import time
 
 SIZE_WINDOW = 900
@@ -9,25 +10,22 @@ window = pg.display.set_mode((SIZE_WINDOW, SIZE_WINDOW))
 pg.display.set_caption("2D Raycasting")
 window.fill((0,0,0))
 
+# clock
+clock = pg.time.Clock()
+
 # My objects
-ray1 = ray.Ray(100,300,10,0)
+light = source.create_source(20, 100,300)
 wall1 = wall.Wall(300,400,300,500)
 
 while True:
-    window.fill((0,0,0))
-    wall1.draw(window)
     
     # For now, the ray is following the mouse
     for event in pg.event.get():
         if event.type == pg.MOUSEMOTION:
-            ray1.update_dir(pg.mouse.get_pos())
+            light.update_pos(pg.mouse.get_pos())
+    light.draw(window)
 
-    ray1.draw(window)
-
-    time.sleep(0.005)
-    pg.display.update()
-
-
+    source.refresh(window, clock, wall1, light)
 
 time.sleep(5)
 pg.quit()

@@ -1,14 +1,16 @@
 import pygame as pg 
 import time
 import wall
+from math import cos,sin
 
 class Ray(object):
     
-    def __init__(self, x, y, xdir, ydir, color = (255,255,255), width = 2):
+    def __init__(self, x, y, norm, angle, color = (255,255,255), width = 2):
         self.width = width
         self.color = color
         self.pos = (x,y)
-        self.dir = (xdir, ydir) # The vector dir is normalized
+        self.angle = angle
+        self.dir = (norm*cos(angle), norm*sin(angle)) # The vector dir is normalized
 
     def draw(self, window):
         pg.draw.line(
@@ -49,6 +51,8 @@ class Ray(object):
     def update_dir(self, coord):
         self.dir = (coord[0] - self.pos[0], coord[1] - self.pos[1])
 
+    def update_pos(self, coord):
+        self.pos = (coord[0], coord[1])
 
 
 

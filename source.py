@@ -31,8 +31,10 @@ def create_source(step_angle, x, y, color = (255,255,255), width = 2):
     return source
 
 def refresh(window, clock, wall, source):
+    """@param wall is a list of walls"""
     window.fill((0,0,0))
-    wall.draw(window)
+    for elt in wall:
+        elt.draw(window)
     
     source.draw(window)
 

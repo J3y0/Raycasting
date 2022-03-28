@@ -16,8 +16,10 @@ pg.mouse.set_visible(False)
 clock = pg.time.Clock()
 
 # My objects
-light = source.create_source(1, 100,300)
+light = source.create_source(5, 100,300)
 wall1 = wall.Wall(300,400,300,500)
+wall2 = wall.Wall(600,200,500,500)
+walls = [wall1, wall2]
 
 while True:
     
@@ -25,14 +27,14 @@ while True:
     for event in pg.event.get():
         if event.type == pg.MOUSEMOTION:
             light.update_pos(pg.mouse.get_pos())
-
+    
     for rays in light.list_rays:
-        pt = rays.intersect(wall1)
-        rays.update_dir(pt)
+        # We init at False each new frame 
+        rays.hitting_wall = False
+        for elt in walls:
+            pt = rays.intersect(elt)
+            rays.update_dir(pt)
 
-    light.draw(window)
+    source.refresh(window, clock, walls, light)
 
-    source.refresh(window, clock, wall1, light)
-
-time.sleep(5)
 pg.quit()

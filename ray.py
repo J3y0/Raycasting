@@ -1,17 +1,23 @@
 import pygame as pg 
 import time
 import wall
-from math import cos,sin
+from math import cos,sin,sqrt
+
+
+def norm_vector(A,B):
+    """return the norm of the vector AB"""
+    return sqrt((B[0] - A[0])**2 + (B[1] - A[1])**2)
 
 class Ray(object):
     
-    def __init__(self, x, y, norm, angle, color = (255,255,255), width = 2):
+    def __init__(self, x, y, init_norm, angle, color = (255,255,255), width = 2):
         self.width = width
         self.color = color
+        self.hitting_wall = False
         self.pos = (x,y)
-        self.norm = norm
+        self.norm = init_norm
         self.angle = angle
-        self.dir = (norm*cos(angle), norm*sin(angle)) # The vector dir is normalized
+        self.dir = (init_norm*cos(angle), init_norm*sin(angle)) # The vector dir is normalized
 
     def draw(self, window):
         pg.draw.line(
@@ -37,16 +43,28 @@ class Ray(object):
         denom = (x2 - x1)*(y4 - y3) - (x4 - x3)*(y2 - y1)
 
         if denom == 0:
-            return (x1 + self.norm*cos(self.angle), y1 + self.norm*sin(self.angle)) 
+            if self.hitting_wall:
+                return (x2, y2)
+            else:
+                return self.init_dir()
 
         t = ((x3 - x1)*(y4 - y3) - (x4 - x3)*(y3 - y1))/ denom # Coef that follows the ray half-segment
         u = ((x3 - x1)*(y2 - y1) - (y3 - y1)*(x2 - x1))/ denom # Coef that follows the wall segment
         
-        if (t >= 0) and (0<=u<=1):
+        if (t >= 0) and (0 <= u <= 1):
             pt = (x3 + u*(x4 - x3), y3 + u*(y4 - y3))
-            return pt
+
+            if (self.hitting_wall) and (norm_vector(self.pos, pt) > norm_vector(self.pos, (x2, y2))):
+                return (x2, y2)
+            else:
+                self.hitting_wall = True
+                return pt
+
         else:
-            return (x1 + self.norm*cos(self.angle), y1 + self.norm*sin(self.angle))
+            if self.hitting_wall:
+                return (x2, y2)
+            else:
+                return self.init_dir()
 
 
     def update_dir(self, coord):
@@ -54,7 +72,9 @@ class Ray(object):
 
     def update_pos(self, coord):
         self.pos = (coord[0], coord[1])
-
+    
+    def init_dir(self):
+        return (self.pos[0] + self.norm*cos(self.angle), self.pos[1] + self.norm*sin(self.angle))
 
 
 if __name__ == "__main__":

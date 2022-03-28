@@ -16,10 +16,20 @@ pg.mouse.set_visible(False)
 clock = pg.time.Clock()
 
 # My objects
-light = source.create_source(5, 100,300)
-wall1 = wall.Wall(300,400,300,500)
-wall2 = wall.Wall(600,200,500,500)
-walls = [wall1, wall2]
+light = source.create_source(2, 100,300)
+
+# Defining the walls of the scene
+walls = []
+
+# First, making the sides of the window as walls
+walls.append(wall.Wall(0,0,0,SIZE_WINDOW))
+walls.append(wall.Wall(0,0,SIZE_WINDOW,0))
+walls.append(wall.Wall(SIZE_WINDOW,0,SIZE_WINDOW,SIZE_WINDOW))
+walls.append(wall.Wall(0,SIZE_WINDOW,SIZE_WINDOW,SIZE_WINDOW))
+
+for i in range(3):
+    walls.append(wall.Wall())
+    walls[-1].rand_coord(SIZE_WINDOW)
 
 while True:
     
